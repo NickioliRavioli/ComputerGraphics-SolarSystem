@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Camera.h"
 #include "Application.h"
 #include <glm/mat4x4.hpp>
 
@@ -17,6 +18,8 @@ public:
 
 protected:
 
-	glm::mat4	m_viewMatrix;
-	glm::mat4	m_projectionMatrix;
+	//glm::mat4	m_viewMatrix;
+	//glm::mat4	m_projectionMatrix;
+	Camera* nicksCam;
+	int a;
 };

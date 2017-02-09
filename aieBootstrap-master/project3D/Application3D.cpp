@@ -24,11 +24,24 @@ bool Application3D::startup() {
 	// initialise gizmo primitive counts
 	Gizmos::create(10000, 10000, 10000, 10000);
 
+	nicksCam = new Camera();
+
 	// create simple camera transforms
+	/*
 	m_viewMatrix = glm::lookAt(vec3(10), vec3(0), vec3(0, 1, 0));
+	glm::mat4 cameraworld = glm::inverse(m_viewMatrix);
+	m_viewMatrix = glm::inverse(cameraworld);
+
+
 	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f,
 										  getWindowWidth() / (float)getWindowHeight(),
 										  0.1f, 1000.f);
+	*/
+
+	nicksCam->SetLookAt(vec3(10), vec3(0), vec3(0, 1, 0));
+	nicksCam->SetPosition(vec3(15));
+	//nicksCam->SetPositionRotation(vec3(10), 0, 0, 0);
+	nicksCam->SetPerspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(), 0.1f, 1000.f);
 
 	return true;
 }
@@ -44,8 +57,11 @@ void Application3D::update(float deltaTime) {
 	float time = getTime();
 
 	// rotate camera
-	m_viewMatrix = glm::lookAt(vec3(glm::sin(time) * 10, 10, glm::cos(time) * 10),
-							   vec3(0), vec3(0, 1, 0));
+	//m_viewMatrix = glm::lookAt(vec3(glm::sin(time) * 10, 10, glm::cos(time) * 10),
+	//						   vec3(0), vec3(0, 1, 0));
+
+	nicksCam->SetLookAt(vec3(glm::sin(time/4) * 10, 10, glm::cos(time/4) * 10), vec3(0), vec3(0, 1, 0));
+
 
 	// wipe the gizmos clean for this frame
 	Gizmos::clear();
@@ -89,9 +105,15 @@ void Application3D::draw() {
 	clearScreen();
 
 	// update perspective in case window resized
+	/*
 	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f,
 										  getWindowWidth() / (float)getWindowHeight(),
 										  0.1f, 1000.f);
 
 	Gizmos::draw(m_projectionMatrix * m_viewMatrix);
+
+	*/
+
+	nicksCam->SetPerspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(),	0.1f, 1000.f);
+	Gizmos::draw(nicksCam->GetProjectionView());
 }
