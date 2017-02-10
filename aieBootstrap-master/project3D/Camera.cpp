@@ -15,10 +15,6 @@ Camera::~Camera()
 //Functions
 //-----------------------------------------------------------
 
-void Camera::Update(float deltaTime)
-{
-}
-
 void Camera::SetPerspective(float fov, float aspectRatio, float near, float far)
 {
 	projectedTransform = glm::perspective(fov, aspectRatio, near, far);
@@ -72,6 +68,12 @@ mat4 Camera::GetProjection()
 mat4 Camera::GetProjectionView()
 {
 	return projectedViewTransform;
+}
+
+vec3 Camera::GetRow(unsigned int index)
+{
+	vec3 row = worldTransform[index].xyz;
+	return row;
 }
 
 

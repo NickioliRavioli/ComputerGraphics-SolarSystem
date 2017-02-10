@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Camera.h"
+#include "FlyCam.h"
 #include "Application.h"
 #include <glm/mat4x4.hpp>
 
