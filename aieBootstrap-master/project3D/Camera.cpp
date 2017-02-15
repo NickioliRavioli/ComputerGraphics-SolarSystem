@@ -4,6 +4,7 @@
 
 Camera::Camera()
 {
+
 }
 
 
@@ -35,6 +36,15 @@ void Camera::SetPosition(vec3 & position)
 	viewTransform = glm::inverse(worldTransform);
 	UpdateProjectionViewTransform();
 
+}
+
+void Camera::SetRotation(float pitch, float yaw, float roll)
+{
+	vec3 temp = worldTransform[3].xyz;
+	worldTransform = glm::eulerAngleXYZ(pitch, yaw, roll);
+	worldTransform[3] = vec4(temp, 1);
+	viewTransform = glm::inverse(worldTransform);
+	UpdateProjectionViewTransform();
 }
 
 void Camera::SetPositionRotation(vec3 pos, float pitch, float yaw, float roll)

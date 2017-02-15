@@ -4,8 +4,11 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
+using glm::vec2;
 using glm::vec3;
 using glm::vec4;
+using glm::mat2;
+using glm::mat3;
 using glm::mat4;
 using aie::Gizmos;
 
@@ -17,31 +20,20 @@ Application3D::~Application3D() {
 
 }
 
+
 bool Application3D::startup() {
-	
+
 	setBackgroundColour(0.25f, 0.25f, 0.25f);
 
 	// initialise gizmo primitive counts
 	Gizmos::create(10000, 10000, 10000, 10000);
 
-	nicksCam = new FlyCam();
+	nicksFlyCam = new FlyCam();
 
-	// create simple camera transforms
-	/*
-	m_viewMatrix = glm::lookAt(vec3(10), vec3(0), vec3(0, 1, 0));
-	glm::mat4 cameraworld = glm::inverse(m_viewMatrix);
-	m_viewMatrix = glm::inverse(cameraworld);
+	nicksFlyCam->SetPosition(vec3(0, 3, 20));
+	nicksFlyCam->SetPerspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(), 0.1f, 1000.f);
 
-
-	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f,
-										  getWindowWidth() / (float)getWindowHeight(),
-										  0.1f, 1000.f);
-	*/
-	
-	nicksCam->SetLookAt(vec3(10), vec3(0), vec3(0, 1, 0));
-	nicksCam->SetPosition(vec3(15));
-	//nicksCam->SetPositionRotation(vec3(10), 0, 0, 0);
-	nicksCam->SetPerspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(), 0.1f, 1000.f);
+	m_mesh = new Mesh();
 
 	return true;
 }
@@ -59,14 +51,18 @@ void Application3D::update(float deltaTime) {
 	// rotate camera
 	//m_viewMatrix = glm::lookAt(vec3(glm::sin(time) * 10, 10, glm::cos(time) * 10),
 	//						   vec3(0), vec3(0, 1, 0));
-	nicksCam->Update(deltaTime, m_window);
-	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	
+	nicksFlyCam->Update(deltaTime, m_window);
+	
 	//nicksCam->SetLookAt(vec3(glm::sin(time/4) * 10, 10, glm::cos(time/4) * 10), vec3(0), vec3(0, 1, 0));
 
 
 	// wipe the gizmos clean for this frame
 	Gizmos::clear();
 
+	m_mesh->GenerateGrid(10, 10);
+
+	/*
 	// draw a simple grid with gizmos
 	vec4 white(1);
 	vec4 black(0, 0, 0, 1);
@@ -82,6 +78,8 @@ void Application3D::update(float deltaTime) {
 	// add a transform so that we can see the axis
 	Gizmos::addTransform(mat4(1));
 
+	
+	
 	// demonstrate a few shapes
 	Gizmos::addAABBFilled(vec3(0), vec3(1), vec4(0, 0.5f, 1, 0.25f));
 	Gizmos::addSphere(vec3(5, 0, 5), 1, 8, 8, vec4(1, 0, 0, 0.5f));
@@ -92,6 +90,7 @@ void Application3D::update(float deltaTime) {
 	mat4 t = glm::rotate(time, glm::normalize(vec3(1, 1, 1)));
 	t[3] = vec4(-2, 0, 0, 1);
 	Gizmos::addCylinderFilled(vec3(0), 0.5f, 1, 5, vec4(0, 1, 1, 1), &t);
+	*/
 
 	// quit if we press escape
 	aie::Input* input = aie::Input::getInstance();
@@ -115,6 +114,10 @@ void Application3D::draw() {
 
 	*/
 
-	nicksCam->SetPerspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(),	0.1f, 1000.f);
-	Gizmos::draw(nicksCam->GetProjectionView());
+	nicksFlyCam->SetPerspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(),	0.1f, 1000.f);
+	Gizmos::draw(nicksFlyCam->GetProjectionView());
+
+	m_mesh->DrawElements(10, 10, nicksFlyCam->GetProjectionView());
+
+
 }

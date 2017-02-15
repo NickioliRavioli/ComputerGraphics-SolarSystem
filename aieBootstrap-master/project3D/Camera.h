@@ -19,6 +19,7 @@ public:
 	void SetPerspective(float fov, float aspectRatio, float near, float far);
 	void SetLookAt(vec3 & from, vec3 & to, vec3 & up);
 	void SetPosition(vec3 & position);
+	void SetRotation(float pitch, float yaw, float roll);
 	void SetPositionRotation(vec3 pos, float pitch, float yaw, float roll);
 
 	mat4 GetWorldTransform();
@@ -35,5 +36,6 @@ protected:
 	mat4 viewTransform;
 	mat4 projectedTransform;
 	mat4 projectedViewTransform;
+
 };
 
