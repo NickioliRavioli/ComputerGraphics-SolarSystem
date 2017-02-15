@@ -5,6 +5,8 @@
 #include "Input.h"
 #include <iostream>
 #include <math.h>
+#include <windows.h>
+
 
 
 class FlyCam : public Camera
@@ -13,12 +15,15 @@ public:
 	FlyCam();
 	virtual ~FlyCam();
 
+	bool IsWindowInFocus();
+
 	virtual void Update(float deltaTime, GLFWwindow* window);
 	void SetSpeed(float speed);
 
 	void KeyboardMovement(float deltaTime);
 	void UpdateMouse(GLFWwindow* window);
-	void MouseMovement(float deltaTime);
+
+
 
 private:
 	float m_moveSpeed;
@@ -40,5 +45,7 @@ private:
 
 	int windowHeight;
 	int windowWidth;
+
+	HWND m_windowName;
 };
 

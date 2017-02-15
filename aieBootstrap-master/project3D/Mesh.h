@@ -35,6 +35,8 @@ public:
 
 private:
 
+	int m_rows, m_cols;
+
 	unsigned int m_VAO; 
 	unsigned int m_VBO; 
 	unsigned int m_IBO;

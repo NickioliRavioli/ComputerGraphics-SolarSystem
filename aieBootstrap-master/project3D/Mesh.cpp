@@ -16,7 +16,21 @@ void Mesh::StartUp()
 	//Create Shaders
 	//----------------------------------------------
 
-	const char* vsSource = "#version 410\n \ layout(location=0) in vec4 position; \ layout(location=1) in vec4 colour; \ out vec4 vColour; \ uniform mat4 projectionViewWorldMatrix; \ void main() { vColour = colour; gl_Position = projectionViewWorldMatrix * position; }";
+	//const char* vsSource = "#version 410\n \ layout(location=0) in vec4 position; \ layout(location=1) in vec4 colour; \ out vec4 vColour; \ uniform mat4 projectionViewWorldMatrix; \ void main() { vColour = colour; gl_Position = projectionViewWorldMatrix * position; }";
+	const char* vsSource = 
+		"#version 410\n \
+		layout(location=0) in vec4 position; \
+		layout(location=1) in vec4 colour; \
+		out vec4 vColour; \
+		uniform mat4 projectionViewWorldMatrix; \
+		\
+		uniform float time; \
+		uniform float heightScale; \
+		void main() { vColour = colour; vec4 P = position; \
+		P.y += sin( time + position.x/3 ) * heightScale; \
+		gl_Position = projectionViewWorldMatrix * P; }";
+
+
 	const char* fsSource = "#version 410\n \ in vec4 vColour; \ out vec4 fragColor; \ void main() { fragColor = vColour; }";
 
 	int success = GL_FALSE;
@@ -62,10 +76,10 @@ void Mesh::GenerateGrid(unsigned int rows, unsigned int cols)
 	{
 		for (unsigned int c = 0; c < cols; ++c)
 		{
-			aoVertices[r * cols + c].position = vec4((float)c, 0, (float)r, 1);
+			aoVertices[r * cols + c].position = vec4((float)c, 0 , (float)r, 1);
 			// create some arbitrary colour based off something 
 			// that might not be related to tiling a texture 
-			vec3 colour = vec3(r / (float)rows, 0, c / (float)cols); //vec3(sinf((c / (float)(cols - 1)) * (r / (float)(rows - 1))));
+			vec3 colour = vec3(r / (float)rows, 1, c / (float)cols); //vec3(sinf((c / (float)(cols - 1)) * (r / (float)(rows - 1))));
 			aoVertices[r * cols + c].colour = vec4(colour, 1);
 		}
 	}
@@ -92,30 +106,6 @@ void Mesh::GenerateGrid(unsigned int rows, unsigned int cols)
 		}
 	}
 
-	/*
-	//Creating Vertex buffer
-	//----------------------------------------------
-	glGenBuffers(1, &m_VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-	glBufferData(GL_ARRAY_BUFFER, (rows * cols) * sizeof(Vertex), aoVertices, GL_STATIC_DRAW);
-
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(vec4)));
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-
-	//Creating indices buffer
-	//----------------------------------------------
-	glGenBuffers(1, &m_IBO);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, (rows - 1) * (cols - 1) * 6 * sizeof(unsigned int), auiIndices, GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	*/
-
 	//Creating Vertex buffer, indices buffer, Vertex Array
 	//--------------------------------------------------------------------------------------------
 	glGenBuffers(1, &m_VBO);
@@ -134,7 +124,7 @@ void Mesh::GenerateGrid(unsigned int rows, unsigned int cols)
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(vec4)));
 
-	//???????
+	//dont need
 	//glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	//bind and fill indices buffer
@@ -142,7 +132,7 @@ void Mesh::GenerateGrid(unsigned int rows, unsigned int cols)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, (rows - 1) * (cols - 1) * 6 * sizeof(unsigned int), auiIndices, GL_STATIC_DRAW);
 
-	//???????
+	//dont need
 	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	//bind Vertex Array Object
@@ -164,9 +154,22 @@ void Mesh::DrawElements(unsigned int rows, unsigned int cols, const mat4 & proje
 {
 	//Draw Elements
 	//----------------------------------------------
+
+	static float m_time = 0;
+	m_time +=.1f;
+	static float m_heightScale = 2;
+
+
 	glUseProgram(m_programID);
 	unsigned int ProjectionViewUniform = glGetUniformLocation(m_programID, "projectionViewWorldMatrix");
 	glUniformMatrix4fv(ProjectionViewUniform, 1, false, glm::value_ptr(projectionViewMatrix));
+
+	unsigned int time = glGetUniformLocation(m_programID, "time");
+	glUniform1f(time, m_time);
+
+	unsigned int heightScale = glGetUniformLocation(m_programID, "heightScale");
+	glUniform1f(heightScale, m_heightScale);
+
 
 	glBindVertexArray(m_VAO);
 	unsigned int indexCount = (rows - 1) * (cols - 1) * 6;

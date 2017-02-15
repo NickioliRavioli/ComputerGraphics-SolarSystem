@@ -18,6 +18,8 @@ FlyCam::FlyCam()
 
 	deltaX = 0;
 	deltaY = 0;
+
+	m_windowName = GetForegroundWindow();
 }
 
 
@@ -28,13 +30,29 @@ FlyCam::~FlyCam()
 
 
 //--------------------------------------------------------------
+bool FlyCam::IsWindowInFocus()
+{
+	if (m_windowName == GetForegroundWindow())
+		return true;
+	return false;
+}
+
+
+
+//--------------------------------------------------------------
 void FlyCam::Update(float deltaTime, GLFWwindow* window)
 {
 	glfwGetWindowSize(window, &windowWidth, &windowHeight);
 
-	KeyboardMovement(deltaTime);
-	UpdateMouse(window);
-	MouseMovement(deltaTime);
+	if (IsWindowInFocus())
+	{
+		KeyboardMovement(deltaTime);
+		UpdateMouse(window);
+	}
+
+
+
+
 }
 
 void FlyCam::SetSpeed(float speed)
@@ -86,6 +104,7 @@ void FlyCam::UpdateMouse(GLFWwindow* window)
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	*/
 
+
 	m_pmouseX = windowWidth / 2;
 	m_pmouseY = windowHeight / 2;
 
@@ -122,11 +141,7 @@ void FlyCam::UpdateMouse(GLFWwindow* window)
 
 }
 
-void FlyCam::MouseMovement(float deltaTime)
-{
-	//static float a = 0;
-	//a += .01f;
-	//SetRotation(0, a, 0);
-}
+
+
 
 

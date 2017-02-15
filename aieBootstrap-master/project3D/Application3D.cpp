@@ -32,8 +32,9 @@ bool Application3D::startup() {
 
 	nicksFlyCam->SetPosition(vec3(0, 3, 20));
 	nicksFlyCam->SetPerspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(), 0.1f, 1000.f);
-
+	float deltaTime = 0;
 	m_mesh = new Mesh();
+	m_mesh->GenerateGrid(100, 100);
 
 	return true;
 }
@@ -60,7 +61,7 @@ void Application3D::update(float deltaTime) {
 	// wipe the gizmos clean for this frame
 	Gizmos::clear();
 
-	m_mesh->GenerateGrid(10, 10);
+
 
 	/*
 	// draw a simple grid with gizmos
@@ -117,7 +118,7 @@ void Application3D::draw() {
 	nicksFlyCam->SetPerspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(),	0.1f, 1000.f);
 	Gizmos::draw(nicksFlyCam->GetProjectionView());
 
-	m_mesh->DrawElements(10, 10, nicksFlyCam->GetProjectionView());
+	m_mesh->DrawElements(100, 100, nicksFlyCam->GetProjectionView());
 
 
 }
