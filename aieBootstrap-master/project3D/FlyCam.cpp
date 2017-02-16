@@ -135,9 +135,9 @@ void FlyCam::UpdateMouse(GLFWwindow* window)
 	worldTransform = currentTransform;
 
 	
-	std::cout << "window W&H " << windowWidth << " " << windowHeight << "\n";
-	std::cout << "mousePos " << m_mouseX << " " << m_mouseY << "\n";
-	std::cout << "Yaw Pitch " << m_yaw << " " << m_pitch << "\n";
+	//std::cout << "window W&H " << windowWidth << " " << windowHeight << "\n";
+	//std::cout << "mousePos " << m_mouseX << " " << m_mouseY << "\n";
+	//std::cout << "Yaw Pitch " << m_yaw << " " << m_pitch << "\n";
 
 }
 

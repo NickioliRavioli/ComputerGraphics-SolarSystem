@@ -36,6 +36,8 @@ bool Application3D::startup() {
 	m_mesh = new Mesh();
 	m_mesh->GenerateGrid(100, 100);
 
+	m_object = new ObjLoader();
+
 	return true;
 }
 
@@ -63,7 +65,7 @@ void Application3D::update(float deltaTime) {
 
 
 
-	/*
+	
 	// draw a simple grid with gizmos
 	vec4 white(1);
 	vec4 black(0, 0, 0, 1);
@@ -75,7 +77,7 @@ void Application3D::update(float deltaTime) {
 						vec3(-10, 0, -10 + i),
 						i == 10 ? white : black);
 	}
-
+	/*
 	// add a transform so that we can see the axis
 	Gizmos::addTransform(mat4(1));
 
@@ -120,5 +122,6 @@ void Application3D::draw() {
 
 	m_mesh->DrawElements(100, 100, nicksFlyCam->GetProjectionView());
 
+	m_object->DrawObj();
 
 }

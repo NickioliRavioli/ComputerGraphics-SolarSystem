@@ -1,5 +1,5 @@
 #include "Mesh.h"
-
+#include <iostream>
 
 Mesh::Mesh()
 {
@@ -15,7 +15,7 @@ void Mesh::StartUp()
 {
 	//Create Shaders
 	//----------------------------------------------
-
+	/*
 	//const char* vsSource = "#version 410\n \ layout(location=0) in vec4 position; \ layout(location=1) in vec4 colour; \ out vec4 vColour; \ uniform mat4 projectionViewWorldMatrix; \ void main() { vColour = colour; gl_Position = projectionViewWorldMatrix * position; }";
 	const char* vsSource = 
 		"#version 410\n \
@@ -32,6 +32,16 @@ void Mesh::StartUp()
 
 
 	const char* fsSource = "#version 410\n \ in vec4 vColour; \ out vec4 fragColor; \ void main() { fragColor = vColour; }";
+	*/
+	
+	std::string a = LoadShader(vertexShaderPath);
+	std::string b = LoadShader(fragmentShaderPath);
+
+	const char* vsSource = a.c_str();
+	const char* fsSource = b.c_str();
+
+	std::cout << a << "\n" << b;
+	
 
 	int success = GL_FALSE;
 	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -76,7 +86,7 @@ void Mesh::GenerateGrid(unsigned int rows, unsigned int cols)
 	{
 		for (unsigned int c = 0; c < cols; ++c)
 		{
-			aoVertices[r * cols + c].position = vec4((float)c, 0 , (float)r, 1);
+			aoVertices[r * cols + c].position = vec4((float)c - cols/2.0f, -0.1f , (float)r - rows/2.0f, 1);
 			// create some arbitrary colour based off something 
 			// that might not be related to tiling a texture 
 			vec3 colour = vec3(r / (float)rows, 1, c / (float)cols); //vec3(sinf((c / (float)(cols - 1)) * (r / (float)(rows - 1))));
@@ -175,5 +185,26 @@ void Mesh::DrawElements(unsigned int rows, unsigned int cols, const mat4 & proje
 	unsigned int indexCount = (rows - 1) * (cols - 1) * 6;
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+}
+
+std::string Mesh::LoadShader(const std::string path)
+{
+	std::string line;
+	std::string output;
+
+	std::ifstream myFile;
+	myFile.open(path);
+
+	if (myFile.is_open())
+	{
+		while (!myFile.eof())
+		{
+			std::getline(myFile, line);
+			output += line + '\n';
+		}
+	}
+	myFile.close();
+
+	return output;
 }
 

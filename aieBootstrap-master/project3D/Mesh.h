@@ -3,6 +3,8 @@
 #include <glm/ext.hpp>
 #include "../bootstrap/gl_core_4_4.h"
 
+#include <fstream>
+#include <string.h>
 
 
 //using
@@ -33,6 +35,8 @@ public:
 	void GenerateGrid(unsigned int rows, unsigned int cols);
 	void DrawElements(unsigned int rows, unsigned int cols, const mat4 & projectionViewMatrix);
 
+	std::string LoadShader(const std::string path);
+
 private:
 
 	int m_rows, m_cols;
@@ -42,5 +46,8 @@ private:
 	unsigned int m_IBO;
 
 	unsigned int m_programID;
+
+	std::string vertexShaderPath = "Shaders/vertexShader_01.txt";
+	std::string fragmentShaderPath = "Shaders/fragmentShader_01.txt";
 };
 
